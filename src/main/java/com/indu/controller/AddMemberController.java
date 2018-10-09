@@ -3,6 +3,7 @@ package com.indu.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,11 @@ public class AddMemberController {
 	@RequestMapping(value = "/registerProcess", method = RequestMethod.POST)
 	public ModelAndView addUser(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("user") User user) {
 		
+		try {
 		userService.register(user);
+		} catch (DataIntegrityViolationException dve) {
+			dve.printStackTrace();
+		}
 		return new ModelAndView("welcome", "firstname", user.getFirstname());
 	}
 
