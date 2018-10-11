@@ -27,7 +27,7 @@ public class AddMemberController {
 
 	}
 
-	@RequestMapping(value = "/registerProcess", method = RequestMethod.POST)
+	@RequestMapping(value = "/add/user", method = RequestMethod.POST)
 	public ModelAndView addUser(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("user") User user) {
 		
 		try {

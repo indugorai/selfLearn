@@ -1,22 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-    <context:component-scan base-package="com.indu" />
-    <context:annotation-config />
-	
-    <!-- <bean id="userService" class="com.indu.service.UserServiceImpl" />
-    <bean id="userDao" class="com.indu.dao.UserDaoImpl" /> -->
+<beans xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:context="http://www.springframework.org/schema/context" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+		xmlns:cassandra="http://www.springframework.org/schema/data/cassandra"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+			http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/data/mongo 
+			http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		http://www.springframework.org/schema/data/cassandra
+			http://www.springframework.org/schema/data/cassandra/spring-cassandra.xsd">
     
-    <!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="datasource" />
-    </bean> -->
+    <!-- <import resource="classpath:config/user-beans.xml" /> -->
+    <context:component-scan base-package="com.indu" />
+    <context:component-scan base-package="com.indu.mongorepository" />
+    <!-- <context:component-scan base-package="com.indu.catalog.cassandrarepository" /> -->
+    
+    <context:annotation-config />
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+    
+    <bean id="userDao" class="com.indu.dao.UserDaoImpl" />
+    <bean id="userService" class="com.indu.service.UserServiceImpl" />
+    
+    <bean class="com.indu.mongorepository.listner.UserCascadeSaveMongoEventListener" />
+    
+    <!-- Factory bean that creates the Mongo instance -->
+	<bean id="mongo" class="org.springframework.data.mongodb.core.MongoClientFactoryBean">
+    	<property name="host" value="localhost" />
+    	<property name="port" value="27017" />
+    </bean>
+    
+	<mongo:db-factory dbname="selflearndb" mongo-ref="mongo" id="mongoDbFactory" />
+    
+    <!-- MongoTemplate for connecting and quering the documents in the database -->
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+	     <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean>
+	
+	<mongo:repositories base-package="com.indu.mongorepository" />
+	<cassandra:repositories base-package="com.indu.catalog.cassandrarepository"/>
 
-    <!-- <bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/myusers" />
-        <property name="username" value="root" />
-        <property name="password" value="root" />
-    </bean> -->
-
+    
 </beans>
