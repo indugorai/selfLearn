@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
 extraProperties=
-projectKey=com.indu\:maven-archtype-webapp
+projectKey=com.indu\:restServiceForProfileAndCatalog
 serverUrl=http\://localhost\:9000
 version=2

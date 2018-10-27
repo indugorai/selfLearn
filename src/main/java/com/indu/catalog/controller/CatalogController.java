@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +42,24 @@ public class CatalogController {
 		Optional<Product> foundProduct = repository.findById(product.getId());
 		if (foundProduct.isPresent()) {
 			return foundProduct.get();
+		}
+		return null;
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value="/get/product/{productId}")
+	@ResponseBody
+	Product getProduct(@PathVariable String productId) {
+		
+		Product product = new Product();
+		Optional<Product> foundProduct = null;
+		System.out.println("CatalogController.getProduct() : " + productId);
+		if (!StringUtils.isEmpty(productId)) {
+			
+			foundProduct = repository.findById(UUID.fromString(productId));
+			if (foundProduct.isPresent()) {
+				return foundProduct.get();
+			}
 		}
 		return null;
 	}
